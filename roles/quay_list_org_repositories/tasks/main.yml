@@ -1,0 +1,36 @@
+---
+# tasks file for quay_list_org_repositories
+
+- name: Ensure the application ansible exists
+  infra.quay_configuration.quay_application:
+    organization: "{{ quay_list_org_repositories_quay_organization }}"
+    name: ansible
+    state: present
+    quay_host: "{{ quay_list_org_repositories_quay_hostname }}"
+    quay_username: "{{ quay_list_org_repositories_quay_username }}"
+    quay_password: "{{ quay_list_org_repositories_quay_password }}"
+    validate_certs: "{{ quay_list_org_repositories_quay_validate_certs }}"
+  register: __app_details
+
+- name: Collect API token for Quay
+  infra.quay_configuration.quay_api_token:
+    client_id: "{{ __app_details['client_id'] }}"
+    quay_host: "{{ quay_list_org_repositories_quay_hostname }}"
+    quay_username: "{{ quay_list_org_repositories_quay_username }}"
+    quay_password: "{{ quay_list_org_repositories_quay_password }}"
+    validate_certs: "{{ quay_list_org_repositories_quay_validate_certs }}"
+  register: __api_token
+
+- name: Collect list of repositories in org
+  ansible.builtin.uri:
+    url: "{{ quay_list_org_repositories_quay_hostname }}/api/v1/repository?namespace={{ quay_list_org_repositories_quay_organization }}"
+    headers:
+      Authorization: "Bearer {{ __api_token['access_token'] }}"
+    validate_certs: "{{ quay_list_org_repositories_quay_validate_certs }}"
+  register: __api_repo_list
+
+- name: Add to repo list
+  ansible.builtin.set_fact:
+    quay_list_org_repositories_repolist: "{{ (quay_list_org_repositories_repolist | default([])) + [{'namespace': item['namespace'], 'name': item['name']}] }}"
+  loop: "{{ __api_repo_list['json']['repositories'] }}"
+...

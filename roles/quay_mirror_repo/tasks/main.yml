@@ -1,0 +1,70 @@
+---
+# tasks file for quay_mirror_repo
+- name: Ensure the organization exists
+  infra.quay_configuration.quay_organization:
+    name: "{{ quay_mirror_repo_quay_organization }}"
+    state: present
+    quay_host: "{{ quay_mirror_repo_quay_hostname }}"
+    quay_username: "{{ quay_mirror_repo_quay_username }}"
+    quay_password: "{{ quay_mirror_repo_quay_password }}"
+    validate_certs: "{{ quay_mirror_repo_quay_validate_certs }}"
+
+- name: Ensure the application ansible exists
+  infra.quay_configuration.quay_application:
+    organization: "{{ quay_mirror_repo_quay_organization }}"
+    name: ansible
+    state: present
+    quay_host: "{{ quay_mirror_repo_quay_hostname }}"
+    quay_username: "{{ quay_mirror_repo_quay_username }}"
+    quay_password: "{{ quay_mirror_repo_quay_password }}"
+    validate_certs: "{{ quay_mirror_repo_quay_validate_certs }}"
+  register: __app_details
+
+- name: Collect API token for Quay
+  infra.quay_configuration.quay_api_token:
+    client_id: "{{ __app_details['client_id'] }}"
+    rights:
+      - all
+    quay_host: "{{ quay_mirror_repo_quay_hostname }}"
+    quay_username: "{{ quay_mirror_repo_quay_username }}"
+    quay_password: "{{ quay_mirror_repo_quay_password }}"
+    validate_certs: "{{ quay_mirror_repo_quay_validate_certs }}"
+  register: __api_token
+
+- name: Ensure the robot account exists
+  infra.quay_configuration.quay_robot:
+    name: "{{ quay_mirror_repo_quay_organization }}+{{ quay_mirror_repo_upstream_hostname | regex_replace('\\.', '_') }}"
+    description: Robot account for mirroring
+    state: present
+    quay_host: "{{ quay_mirror_repo_quay_hostname }}"
+    quay_token: "{{ __api_token['access_token'] }}"
+    validate_certs: "{{ quay_mirror_repo_quay_validate_certs }}"
+  register: robot_details
+
+- name: Ensure repository exists
+  infra.quay_configuration.quay_repository:
+    name: "{{ quay_mirror_repo_quay_organization }}/{{ quay_mirror_repo_name }}"
+    visibility: public
+    repo_state: MIRROR
+    state: present
+    quay_host: "{{ quay_mirror_repo_quay_hostname }}"
+    quay_token: "{{ __api_token['access_token'] }}"
+    validate_certs: "{{ quay_mirror_repo_quay_validate_certs }}"
+
+- name: Set repository mirror settings
+  infra.quay_configuration.quay_repository_mirror:
+    name: "{{ quay_mirror_repo_quay_organization }}/{{ quay_mirror_repo_name }}"
+    external_reference: "{{ quay_mirror_repo_upstream_hostname }}/{{ quay_mirror_repo_quay_organization }}/{{ quay_mirror_repo_name }}"
+    is_enabled: true
+    image_tags:
+      - "*"
+    force_sync: "{{ quay_mirror_repo_force_sync }}"
+    sync_interval: "{{ quay_mirror_repo_sync_interval }}"
+    external_registry_username: "{{ quay_mirror_repo_upstream_username }}"
+    external_registry_password: "{{ quay_mirror_repo_upstream_password }}"
+    verify_tls: "{{ quay_mirror_repo_upstream_validate_certs }}"
+    robot_username: "{{ robot_details['name'] }}"
+    quay_host: "{{ quay_mirror_repo_quay_hostname }}"
+    quay_token: "{{ __api_token['access_token'] }}"
+    validate_certs: "{{ quay_mirror_repo_quay_validate_certs }}"
+...

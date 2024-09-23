@@ -1,0 +1,17 @@
+---
+quay:
+  hosts:
+    quay_central:
+      quay_hostname: "https://bastion.sgwlq.sandbox374.opentlc.com:8443"
+      quay_username: "init"
+      quay_password: "redhat123"
+      quay_validate_certs: false
+    quay_mgmt:
+      quay_hostname: "registry-quay-hub2.apps.cluster-sgwlq.sgwlq.sandbox374.opentlc.com"
+      quay_username: "quayadmin"
+      quay_password: "redhat123"
+      quay_validate_certs: false
+      mirror_orgs:
+        - ocp4
+
+

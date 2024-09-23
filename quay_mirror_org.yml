@@ -1,0 +1,40 @@
+---
+- name: Gather repositories to mirror
+  hosts: quay_central
+  gather_facts: false
+  connection: local
+  tasks:
+    # Set quay_list_org_repositories_repolist
+    - name: Get list of repositories
+      ansible.builtin.include_role:
+        name: quay_list_org_repositories
+      loop: "{{ hostvars['quay_mgmt']['mirror_orgs'] }}"
+      vars:
+        quay_list_org_repositories_quay_organization: "{{ item }}"
+        quay_list_org_repositories_quay_hostname: "{{ quay_hostname }}"
+        quay_list_org_repositories_quay_username: "{{ quay_username }}"
+        quay_list_org_repositories_quay_password: "{{ quay_password }}"
+        quay_list_org_repositories_quay_validate_certs: "{{ quay_validate_certs }}"
+
+- name: Set each repository to be mirrored
+  hosts: quay_mgmt
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Mirror each repository
+      ansible.builtin.include_role:
+        name: quay_mirror_repo
+      loop: "{{ hostvars['quay_central']['quay_list_org_repositories_repolist'] | default([]) }}"
+      loop_control:
+        loop_var: quay_mirror_repo_repository
+      vars:
+        quay_mirror_repo_quay_hostname: "{{ quay_hostname }}"
+        quay_mirror_repo_quay_username: "{{ quay_username }}"
+        quay_mirror_repo_quay_password: "{{ quay_password }}"
+        quay_mirror_repo_quay_validate_certs: "{{ quay_validate_certs }}"
+        quay_mirror_repo_quay_organization: "{{ quay_mirror_repo_repository['namespace'] }}"
+        quay_mirror_repo_name: "{{ quay_mirror_repo_repository['name'] }}"
+        quay_mirror_repo_upstream_hostname: "{{ hostvars['quay_central']['quay_hostname'] | urlsplit('hostname') }}"
+        quay_mirror_repo_upstream_username: "{{ hostvars['quay_central']['quay_username'] }}"
+        quay_mirror_repo_upstream_password: "{{ hostvars['quay_central']['quay_password'] }}"
+        quay_mirror_repo_upstream_validate_certs: "{{ hostvars['quay_central']['quay_validate_certs'] }}"

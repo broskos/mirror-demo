@@ -33,7 +33,7 @@
 
 - name: Ensure the robot account exists
   infra.quay_configuration.quay_robot:
-    name: "{{ quay_mirror_repo_quay_organization }}+{{ quay_mirror_repo_upstream_hostname | regex_replace('\\.', '_') }}"
+    name: "{{ quay_mirror_repo_quay_organization }}+{{ quay_mirror_repo_upstream_hostname | urlsplit('hostname') | regex_replace('\\.', '_') }}"
     description: Robot account for mirroring
     state: present
     quay_host: "{{ quay_mirror_repo_quay_hostname }}"
@@ -54,7 +54,7 @@
 - name: Set repository mirror settings
   infra.quay_configuration.quay_repository_mirror:
     name: "{{ quay_mirror_repo_quay_organization }}/{{ quay_mirror_repo_name }}"
-    external_reference: "{{ quay_mirror_repo_upstream_hostname }}/{{ quay_mirror_repo_quay_organization }}/{{ quay_mirror_repo_name }}"
+    external_reference: "{{ quay_mirror_repo_upstream_hostname | urlsplit('netloc') }}/{{ quay_mirror_repo_quay_organization }}/{{ quay_mirror_repo_name }}"
     is_enabled: true
     image_tags:
       - "*"

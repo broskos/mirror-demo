@@ -34,7 +34,7 @@
         quay_mirror_repo_quay_validate_certs: "{{ quay_validate_certs }}"
         quay_mirror_repo_quay_organization: "{{ quay_mirror_repo_repository['namespace'] }}"
         quay_mirror_repo_name: "{{ quay_mirror_repo_repository['name'] }}"
-        quay_mirror_repo_upstream_hostname: "{{ hostvars['quay_central']['quay_hostname'] | urlsplit('hostname') }}"
+        quay_mirror_repo_upstream_hostname: "{{ hostvars['quay_central']['quay_hostname'] | urlsplit('netloc') }}"
         quay_mirror_repo_upstream_username: "{{ hostvars['quay_central']['quay_username'] }}"
         quay_mirror_repo_upstream_password: "{{ hostvars['quay_central']['quay_password'] }}"
         quay_mirror_repo_upstream_validate_certs: "{{ hostvars['quay_central']['quay_validate_certs'] }}"

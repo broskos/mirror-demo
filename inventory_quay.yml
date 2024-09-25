@@ -2,7 +2,8 @@
 quay:
   hosts:
     quay_source:
-      quay_hostname: "https://bastion.sgwlq.sandbox374.opentlc.com:8443"
+      quay_hostname: "bastion.sgwlq.sandbox374.opentlc.com"
+      quay_port: 8443
       quay_username: "init"
       quay_password: "redhat123"
       quay_validate_certs: false

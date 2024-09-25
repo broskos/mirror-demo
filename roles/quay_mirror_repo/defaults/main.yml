@@ -2,3 +2,4 @@
 # defaults file for quay_mirror_repo
 quay_mirror_repo_sync_interval: 86400  # 1 day
 quay_mirror_repo_force_sync: true
+quay_mirror_repo_upstream_port: 443

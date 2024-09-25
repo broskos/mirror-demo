@@ -12,6 +12,7 @@
       vars:
         quay_list_org_repositories_quay_organization: "{{ item }}"
         quay_list_org_repositories_quay_hostname: "{{ quay_hostname }}"
+        quay_list_org_repositories_quay_port: "{{ quay_port }}"
         quay_list_org_repositories_quay_username: "{{ quay_username }}"
         quay_list_org_repositories_quay_password: "{{ quay_password }}"
         quay_list_org_repositories_quay_validate_certs: "{{ quay_validate_certs }}"
@@ -36,6 +37,7 @@
         quay_mirror_repo_quay_organization: "{{ quay_mirror_repo_repository['namespace'] }}"
         quay_mirror_repo_name: "{{ quay_mirror_repo_repository['name'] }}"
         quay_mirror_repo_upstream_hostname: "{{ hostvars['quay_source']['quay_hostname'] }}"
+        quay_mirror_repo_upstream_port: "{{ hostvars['quay_source']['quay_port'] }}"
         quay_mirror_repo_upstream_username: "{{ hostvars['quay_source']['quay_username'] }}"
         quay_mirror_repo_upstream_password: "{{ hostvars['quay_source']['quay_password'] }}"
         quay_mirror_repo_upstream_validate_certs: "{{ hostvars['quay_source']['quay_validate_certs'] }}"

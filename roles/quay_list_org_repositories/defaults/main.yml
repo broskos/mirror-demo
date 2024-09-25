@@ -1,2 +1,4 @@
 ---
 # defaults file for quay_list_org_repositories
+quay_list_org_repositories_quay_port: 443
+quay_list_org_repositories_quay_protocol: https

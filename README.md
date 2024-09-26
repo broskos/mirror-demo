@@ -17,7 +17,7 @@ tar -xvf mirror-registry.tar.gz
 ```
 mkdir ~/.docker
 cat my-pull-secret-file > ~/.docker/config.json
-podman login --authfile ~/.docker/config.json -u init -p redhat123 bastion.sgwlq.sandbox374.opentlc.com:8443
+podman login --authfile ~/.docker/config.json -u init -p redhat123 --tls-verify=false bastion.sgwlq.sandbox374.opentlc.com:8443
 ```
 
 ### create imageset-config.yaml

@@ -61,7 +61,7 @@ oc mirror --config imageset-config.yaml docker://bastion.sgwlq.sandbox374.opentl
 
 ### clone playbook and role repo and change to mirror-demo directory
 ```
-git clone ssh://git@gitlab.consulting.redhat.com:2222/broskos/mirror-demo.git
+git clone https://github.com/broskos/mirror-demo.git
 cd mirror-demo
 
 ```
